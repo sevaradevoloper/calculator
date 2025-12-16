@@ -1,0 +1,222 @@
+/* ========================================================= */
+/* 0. UMUMIY VA ASOSIY SOZLAMALAR */
+/* ========================================================= */
+
+:root {
+    /* iPhone Calculator Rang Palitrasi */
+    --calc-dark: #333333; /* Kalkulyator foni */
+    --calc-light: #505050; /* Raqam tugmalari foni */
+    --calc-accent: #ff9500; /* Operatorlar (Orange) */
+    --calc-control: #a6a6a6; /* Boshqaruv tugmalari (Gray) */
+    --white: #ffffff;
+    --text-dark: #2a2a2a;
+    --primary-color: #0077b6; /* Asosiy rang */
+    --red-alert: #e63946;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+    user-select: none;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* ========================================================= */
+/* 1. MODALNI OCHUVCHI TUGMA */
+/* ========================================================= */
+
+.show__btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: var(--primary-color);
+    color: var(--white);
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 200px;
+}
+.show__btn:hover { background-color: #5499e2; }
+
+/* ========================================================= */
+/* 2. MODAL (KALKULYATOR) VA OVERLAY */
+/* ========================================================= */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    background-color: var(--calc-dark);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    width: 90%;
+    max-width: 350px; 
+}
+
+/* Yopish klassi */
+.hidden {
+    display: none;
+    /* opacity: 0; */
+    /* pointer-events: none; */
+}
+
+/* ========================================================= */
+/* 3. MODAL ICHIDAGI ELEMENTLAR */
+/* ========================================================= */
+
+/* Sarlavha Qismi */
+.header__modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -1px;
+    
+}
+.header__modal-title {
+    color: var(--white);
+    font-size: 1.2rem;
+    margin: 0;
+}
+.close__btn {
+    /* Yopish tugmasini chiroyli dumaloq qilish */
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: var(--red-alert);
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Natija Displeyi */
+.modal__body input {
+    grid-column: 1 / 5;
+    height: 100px;
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    font-size: 4rem; /* Katta raqamlar */
+    text-align: right;
+    border: none;
+    background: var(--calc-dark);
+    color: var(--white);
+}
+
+/* Tugmalarni joylash uchun Grid (modal__body) */
+.modal__body {
+    /* HTMLdagi barcha <br> teglarini Grid to'g'ri ishlashi uchun yashirish */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding-top: 10px;
+}
+.modal__body br {
+    display: none;
+}
+
+
+/* Tugmalar uchun umumiy stil */
+.modal__body button {
+    height: 70px;
+    width: 100%;
+    border: none;
+    border-radius: 50%; /* Dumaloq */
+    font-size: 1.8rem;
+    font-weight: normal;
+    cursor: pointer;
+    transition: filter 0.1s;
+    box-shadow: none;
+    color: var(--white); /* Barcha tugmalar uchun standart rang */
+    background-color: var(--calc-light); /* Barcha raqamlar uchun standart fon */
+}
+
+/* Tugma Active (Bosilganda) Effekti */
+.modal__body button:active {
+    filter: brightness(0.8);
+}
+
+/* ========================================================= */
+/* 4. MAXSUS TUGMALAR STILLARI */
+/* ========================================================= */
+
+/* Boshqaruv Tugmalari (AC, Qavslar, Backspace) */
+#clear,
+button[data-val="("],
+button[data-val=")"],
+#backscape {
+    background-color: var(--calc-control);
+    color: var(--text-dark);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Operatorlar Tugmalari (Orange) */
+button[data-val="/"],
+button[data-val="*"],
+button[data-val="-"],
+button[data-val="+"],
+button[data-val="%"] {
+    background-color: var(--calc-accent);
+    color: var(--white);
+}
+
+/* Nol (0) tugmasi - 2 ustunni egallaydi */
+button[data-val="0"] {
+    grid-column: span 1;
+    border-radius: 35px;
+    text-align: left;
+    padding-left: 25px;
+}
+
+/* Barobar (=) tugmasi - oxirgi qatorni to'liq egallaydi */
+#barobar {
+    grid-column: 1 / 5; /* Barcha 4 ustunni egallaydi */
+    background-color: var(--calc-accent);
+    color: var(--white);
+    height: 70px;
+    border-radius: 35px; /* Kengaytirilgan yumaloqlik */
+    font-size: 2rem;
+    font-weight: bold;
+}
